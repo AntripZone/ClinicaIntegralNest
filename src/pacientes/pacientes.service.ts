@@ -8,63 +8,43 @@ export class PacientesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    try {
-      return this.prisma.paciente.findMany({
-        orderBy: { id: 'asc' },
-      });
-    } catch (error) {
-      return error;
-    }
+    return this.prisma.paciente.findMany({
+      orderBy: { id: 'asc' },
+    });
   }
 
   async findOne(id: number) {
-    try {
-      const paciente = await this.prisma.paciente.findUnique({
-        where: { id },
-      });
-      if (!paciente)
-        throw new NotFoundException(`Paciente con ID: ${id} no encontrado.`);
+    const paciente = await this.prisma.paciente.findUnique({
+      where: { id },
+    });
+    if (!paciente)
+      throw new NotFoundException(`Paciente con ID: ${id} no encontrado.`);
 
-      return paciente;
-    } catch (error) {
-      return error;
-    }
+    return paciente;
   }
 
   async create(createPacienteDto: CreatePacienteDto) {
-    try {
-      return await this.prisma.paciente.create({
-        data: createPacienteDto,
-      });
-    } catch (error) {
-      return error;
-    }
+    return await this.prisma.paciente.create({
+      data: createPacienteDto,
+    });
   }
 
   async update(id: number, updatePacienteDto: UpdatePacienteDto) {
-    try {
-      return await this.prisma.paciente.update({
-        where: { id },
-        data: updatePacienteDto,
-      });
-    } catch (error) {
-      return error;
-    }
+    return await this.prisma.paciente.update({
+      where: { id },
+      data: updatePacienteDto,
+    });
   }
 
   async remove(id: number) {
-    try {
-      const paciente = await this.prisma.paciente.findUnique({
-        where: { id },
-      });
-      if (!paciente)
-        throw new NotFoundException(`Paciente con ID: ${id} no encontrado.`);
+    const paciente = await this.prisma.paciente.findUnique({
+      where: { id },
+    });
+    if (!paciente)
+      throw new NotFoundException(`Paciente con ID: ${id} no encontrado.`);
 
-      return await this.prisma.paciente.delete({
-        where: { id },
-      });
-    } catch (error) {
-      return error;
-    }
+    return await this.prisma.paciente.delete({
+      where: { id },
+    });
   }
 }
