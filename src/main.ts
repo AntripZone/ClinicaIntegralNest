@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule, ObserveInstrument } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaExceptionFilter } from './prisma/prisma-exception.filter.js';
+import { LoggingInterceptor } from './common/interceptors/logginInterceptor.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
 
@@ -12,6 +13,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new PrismaExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('Clínica Integral API')
