@@ -7,8 +7,19 @@ import { UpdatePacienteDto } from './dto/update-paciente.dto.js';
 export class PacientesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(query?: string) {
+    const texto = query?.trim();
+
     return this.prisma.paciente.findMany({
+      where: texto
+        ? {
+            OR: [
+              { nombre: { contains: texto, mode: 'insensitive' } },
+              { apellido: { contains: texto, mode: 'insensitive' } },
+              { email: { contains: texto, mode: 'insensitive' } },
+            ],
+          }
+        : undefined,
       orderBy: { id: 'asc' },
     });
   }

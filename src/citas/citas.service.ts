@@ -7,6 +7,12 @@ import {
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateCitaDto } from './dto/create-cita.dto.js';
 import { Prisma } from '../generated/prisma/client.js';
+import { EstadoCita } from '../generated/prisma/enums.js';
+
+const incluirResumen = {
+  paciente: { select: { id: true, nombre: true, apellido: true } },
+  medico: { select: { id: true, nombre: true, apellido: true } },
+} as const;
 
 @Injectable()
 export class CitasService {
@@ -21,6 +27,7 @@ export class CitasService {
     try {
       return await this.prisma.cita.create({
         data: createCitaDto,
+        include: incluirResumen,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -36,25 +43,34 @@ export class CitasService {
     }
   }
 
-  findAll() {
+  findAll(estado?: string, pacienteId?: number) {
+    const estadoNormalizado = estado?.toUpperCase();
+
+    if (
+      estadoNormalizado &&
+      !Object.values(EstadoCita).includes(estadoNormalizado as EstadoCita)
+    ) {
+      throw new BadRequestException(`Estado inválido: ${estado}`);
+    }
+
     return this.prisma.cita.findMany({
-      include: {
-        paciente: {
-          select: {
-            id: true,
-            nombre: true,
-            apellido: true,
-          },
-        },
-        medico: {
-          select: {
-            id: true,
-            nombre: true,
-            apellido: true,
-          },
-        },
+      where: {
+        ...(estadoNormalizado && { estado: estadoNormalizado as EstadoCita }),
+        ...(pacienteId && { pacienteId }),
       },
+      include: incluirResumen,
       orderBy: { fechaHora: 'asc' },
+    });
+  }
+
+  async updateEstado(id: number, estado: EstadoCita) {
+    const cita = await this.prisma.cita.findUnique({ where: { id } });
+    if (!cita) throw new NotFoundException(`Cita con ID: ${id} no encontrada.`);
+
+    return this.prisma.cita.update({
+      where: { id },
+      data: { estado },
+      include: incluirResumen,
     });
   }
 }

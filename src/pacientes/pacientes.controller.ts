@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PacientesService } from './pacientes.service.js';
 import { CreatePacienteDto } from './dto/create-paciente.dto.js';
@@ -26,8 +27,8 @@ export class PacientesController {
 
   @ApiOperation({ summary: 'Lista todos los pacientes' })
   @Get()
-  findAll() {
-    return this.pacientesService.findAll();
+  findAll(@Query('query') query?: string) {
+    return this.pacientesService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Crear un paciente' })
@@ -45,7 +46,7 @@ export class PacientesController {
   @ApiOperation({ summary: 'Actualizar 1 paciente' })
   @Patch(':id')
   update(
-    @Param(':id') id: string,
+    @Param('id') id: string,
     @Body() updatePacienteDto: UpdatePacienteDto,
   ) {
     return this.pacientesService.update(+id, updatePacienteDto);
