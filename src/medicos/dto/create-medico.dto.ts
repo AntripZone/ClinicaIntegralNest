@@ -60,7 +60,7 @@ export class CreateMedicoDto {
   @MaxLength(20)
   numColegiatura: string;
 
-  @ApiProperty({ example: 'Neurologo' })
+  @ApiProperty({ example: '1' })
   @Type(() => Number)
   @IsInt({ message: 'La especialidad debe ser un número entero' })
   @IsPositive({ message: 'La especialidad debe ser un ID válido' })

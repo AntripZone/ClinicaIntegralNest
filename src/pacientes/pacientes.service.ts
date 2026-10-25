@@ -53,14 +53,21 @@ export class PacientesService {
 
   async create(createPacienteDto: CreatePacienteDto) {
     return await this.prisma.paciente.create({
-      data: createPacienteDto,
+      data: {
+        ...createPacienteDto,
+        fechaNacimiento: new Date(createPacienteDto.fechaNacimiento),
+      },
     });
   }
 
   async update(id: number, updatePacienteDto: UpdatePacienteDto) {
+    const { fechaNacimiento, ...resto } = updatePacienteDto;
     return await this.prisma.paciente.update({
       where: { id },
-      data: updatePacienteDto,
+      data: {
+        ...resto,
+        ...(fechaNacimiento && { fechaNacimiento: new Date(fechaNacimiento) }),
+      },
     });
   }
 

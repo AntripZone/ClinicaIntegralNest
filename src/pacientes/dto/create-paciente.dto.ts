@@ -51,7 +51,7 @@ export class CreatePacienteDto {
       message: 'La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD)',
     },
   )
-  fechaNacimiento: Date;
+  fechaNacimiento: string;
 
   @ApiProperty({ example: 'Lugar de Ubicacion: Trujillo' })
   @IsOptional()
