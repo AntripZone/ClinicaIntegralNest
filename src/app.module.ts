@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { CitasModule } from './citas/citas.module.js';
 import { ConfigModule } from '@nestjs/config';
 import { envValidationSchema } from './config/envValidation.js';
+import { ReportesModule } from './reportes/reportes.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -34,6 +35,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     PacientesModule,
     MedicosModule,
     CitasModule,
+    ReportesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
