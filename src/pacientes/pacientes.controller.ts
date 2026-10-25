@@ -15,7 +15,12 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @ApiTags('Pacientes')
 @Controller('pacientes')
@@ -26,9 +31,20 @@ export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
   @ApiOperation({ summary: 'Lista todos los pacientes' })
+  @ApiQuery({ name: 'query', required: false })
+  @ApiQuery({ name: 'pagina', required: false, type: Number })
+  @ApiQuery({ name: 'limite', required: false, type: Number })
   @Get()
-  findAll(@Query('query') query?: string) {
-    return this.pacientesService.findAll(query);
+  findAll(
+    @Query('query') query?: string,
+    @Query('pagina') pagina?: string,
+    @Query('limite') limite?: string,
+  ) {
+    return this.pacientesService.findAll(
+      query,
+      Number(pagina) || 1,
+      Number(limite) || 20,
+    );
   }
 
   @ApiOperation({ summary: 'Crear un paciente' })
