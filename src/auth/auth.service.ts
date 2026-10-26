@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { UsuariosService } from '../usuarios/usuarios.service.js';
 import { CreateUsuariosDto } from '../usuarios/dto/create-usuarios.dto.js';
 import { LoginDto } from './dto/login.dto.js';
+import { emitWarning } from 'process';
 @Injectable()
 export class AuthService {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -18,7 +19,7 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales Invalidas');
     }
     const isMatch = await bcrypt.compare(
-      LoginDto.passwordHash,
+      LoginDto.password,
       usuario.passwordHash,
     );
     if (!isMatch) {
@@ -29,6 +30,13 @@ export class AuthService {
       process.env.JWT_SECRET as string,
       { expiresIn: '8h' },
     );
-    return { token };
+    return {
+      token,
+      usuario: {
+        id: usuario.id,
+        email: usuario.email,
+        rol: usuario.rol,
+      },
+    };
   }
 }
