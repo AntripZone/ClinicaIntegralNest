@@ -3,10 +3,12 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { ReportesService } from './reportes.services.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 
 @ApiBearerAuth()
 @ApiTags('Reportes')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('GERENCIA')
 @Controller('reportes')
 export class ReportesController {
   constructor(private readonly reportesService: ReportesService) {}
