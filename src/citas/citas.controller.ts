@@ -48,4 +48,25 @@ export class CitasController {
   updateEstado(@Param('id') id: string, @Body() dto: UpdateEstadoCitaDto) {
     return this.citasService.updateEstado(+id, dto.estado);
   }
+
+  @ApiOperation({ summary: 'Historial de citas paginado' })
+  @ApiQuery({
+    name: 'estado',
+    required: false,
+    enum: ['PROGRAMADA', 'COMPLETADA', 'CANCELADA'],
+  })
+  @ApiQuery({ name: 'pagina', required: false, type: Number })
+  @ApiQuery({ name: 'limite', required: false, type: Number })
+  @Get('historial')
+  historial(
+    @Query('estado') estado?: string,
+    @Query('pagina') pagina?: string,
+    @Query('limite') limite?: string,
+  ) {
+    return this.citasService.historial(
+      estado,
+      Number(pagina) || 1,
+      Number(limite) || 10,
+    );
+  }
 }

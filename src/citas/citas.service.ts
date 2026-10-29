@@ -73,4 +73,39 @@ export class CitasService {
       include: incluirResumen,
     });
   }
+
+  async historial(estado?: string, pagina = 1, limite = 10) {
+    const estadoNormalizado = estado?.toUpperCase();
+
+    if (
+      estadoNormalizado &&
+      !Object.values(EstadoCita).includes(estadoNormalizado as EstadoCita)
+    ) {
+      throw new BadRequestException(`Estado inválido: ${estado}`);
+    }
+
+    const paginaSegura = Math.max(1, Math.floor(pagina));
+    const limiteSeguro = Math.min(100, Math.max(1, Math.floor(limite)));
+    const where = estadoNormalizado
+      ? { estado: estadoNormalizado as EstadoCita }
+      : {};
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.cita.findMany({
+        where,
+        include: incluirResumen,
+        orderBy: { fechaHora: 'desc' }, // historial: lo más reciente primero
+        skip: (paginaSegura - 1) * limiteSeguro,
+        take: limiteSeguro,
+      }),
+      this.prisma.cita.count({ where }),
+    ]);
+
+    return {
+      data,
+      total,
+      pagina: paginaSegura,
+      totalPaginas: Math.max(1, Math.ceil(total / limiteSeguro)),
+    };
+  }
 }
