@@ -34,8 +34,11 @@ export class AuthService {
       token,
       usuario: {
         id: usuario.id,
+        nombre: usuario.nombre,
         email: usuario.email,
         rol: usuario.rol,
+        telefono: usuario.telefono,
+        fotoUrl: usuario.fotoUrl,
       },
     };
   }

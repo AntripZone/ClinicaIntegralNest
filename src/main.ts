@@ -4,12 +4,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { PrismaExceptionFilter } from './prisma/prisma-exception.filter.js';
 import { LoggingInterceptor } from './common/interceptors/logginInterceptor.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'node:path';
 import 'dotenv/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     instrument: ObserveInstrument,
   });
+  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
   app.enableCors({ origin: process.env.CORS_ORIGIN });
 
   app.useGlobalFilters(new PrismaExceptionFilter());

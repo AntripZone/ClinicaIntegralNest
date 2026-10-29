@@ -63,8 +63,35 @@ export class UsuariosService {
         id: true,
         email: true,
         rol: true,
+        nombre: true,
+        telefono: true,
+        fotoUrl: true,
         creadoEn: true,
         passwordHash: true,
+      },
+    });
+  }
+
+  async actualizarPerfil(
+    id: number,
+    datos: { nombre: string; email: string; telefono?: string },
+    fotoUrl?: string,
+  ) {
+    return this.prisma.usuario.update({
+      where: { id },
+      data: {
+        nombre: datos.nombre,
+        email: datos.email,
+        telefono: datos.telefono || null,
+        ...(fotoUrl && { fotoUrl }),
+      },
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        rol: true,
+        telefono: true,
+        fotoUrl: true,
       },
     });
   }

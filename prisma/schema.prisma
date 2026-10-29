@@ -101,6 +101,9 @@ model Usuario {
   email        String   @unique @db.VarChar(150)
   passwordHash String   @map("password_hash")
   rol          Rol
+  nombre       String?  @db.VarChar(100)
+  telefono     String?  @db.VarChar(15)
+  fotoUrl      String?  @map("foto_url") @db.VarChar(255)
   creadoEn     DateTime @default(now()) @map("creado_en")
 
   @@map("usuarios")
